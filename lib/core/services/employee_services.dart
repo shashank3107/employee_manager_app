@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:employee_manager_app/core/models/employee_model.dart';
@@ -36,6 +37,37 @@ class EmployeeServices {
 
       if (response.statusCode == 200) {
         return Success(response: "Deleted Successfully");
+      }
+      return Failure(
+          code: userInvalidResponse, errorResponse: 'Invalid Response');
+    } on HttpException {
+      return Failure(code: noInternet, errorResponse: 'No Internet');
+    } on FormatException {
+      return Failure(code: invalidFormat, errorResponse: 'Invalid Fomat');
+    } catch (e) {
+      return Failure(code: unknownError, errorResponse: 'Unknown Error');
+    }
+  }
+
+  static Future<Object> addEmployee(EmployeeModel employeeModel) async {
+    Map<String, dynamic> employeeDetails = {
+      "name": employeeModel.name,
+      "email": employeeModel.email,
+      "phoneNo": employeeModel.phoneNo,
+      "dateOfJoining": employeeModel.dateOfJoining!.toIso8601String()
+    };
+    var result;
+    try {
+      var url = Uri.parse(baseUrl);
+
+      print(employeeModel.name);
+      final response = await http.post(url,
+          body: jsonEncode(employeeDetails), headers: headersMap);
+      result = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        print("Success");
+        return Success(response: jsonDecode(response.body));
       }
       return Failure(
           code: userInvalidResponse, errorResponse: 'Invalid Response');

@@ -1,7 +1,9 @@
 import 'package:employee_manager_app/core/controller/employee_controller.dart';
 import 'package:employee_manager_app/utils/constants.dart';
+import 'package:employee_manager_app/views/pages/employees/add_employees.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 
 class HomeScreenView extends StatelessWidget {
   HomeScreenView({Key? key}) : super(key: key);
@@ -91,6 +93,20 @@ class HomeScreenView extends StatelessWidget {
               );
             }));
       }),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              Get.to(() => const AddEmployee());
+            },
+            child: const Icon(Icons.add),
+          ),
+          const SizedBox(
+            width: 15,
+          ),
+        ],
+      ),
     );
   }
 }

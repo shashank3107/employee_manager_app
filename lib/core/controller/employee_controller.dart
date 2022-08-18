@@ -2,6 +2,7 @@ import 'package:employee_manager_app/core/models/employee_model.dart';
 import 'package:employee_manager_app/core/services/api_status.dart';
 
 import 'package:employee_manager_app/core/services/employee_services.dart';
+import 'package:employee_manager_app/views/pages/home/home_screen_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +10,7 @@ import 'package:intl/intl.dart';
 class EmployeeController extends GetxController {
   DateTime currentDate = DateTime.now();
   var employees = List<EmployeeModel>.empty().obs;
+  RxBool loading = false.obs;
 
   @override
   void onInit() {
@@ -58,6 +60,31 @@ class EmployeeController extends GetxController {
         duration: Duration(seconds: 3),
       );
     }
+    if (response is Failure) {
+      print(response.code);
+    }
+  }
+
+  Future addEmployee(EmployeeModel employeeModel) async {
+    var response = await EmployeeServices.addEmployee(employeeModel);
+
+    if (response is Success) {
+      loading.value = false;
+      var newEmployee =
+          EmployeeModel.fromJson(response.response as Map<String, dynamic>);
+      print(newEmployee.name);
+      employees.add(newEmployee);
+      Get.off(() => HomeScreenView());
+      print(employees.length);
+      Get.snackbar(
+        'Added',
+        'Employee Succesfully Added',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: Duration(seconds: 3),
+      );
+      //employees.value = response.response as List<EmployeeModel>;
+    }
+
     if (response is Failure) {
       print(response.code);
     }
