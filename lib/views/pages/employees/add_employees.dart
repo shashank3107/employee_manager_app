@@ -1,31 +1,28 @@
 import 'package:employee_manager_app/core/controller/employee_controller.dart';
 import 'package:employee_manager_app/core/models/employee_model.dart';
 import 'package:employee_manager_app/core/services/employee_services.dart';
+import 'package:employee_manager_app/utils/constants.dart';
 import 'package:employee_manager_app/utils/validator.dart';
 import 'package:employee_manager_app/views/pages/home/home_screen_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:get/get.dart';
 
-class AddEmployee extends StatefulWidget {
-  const AddEmployee({Key? key}) : super(key: key);
-
-  @override
-  State<AddEmployee> createState() => _AddEmployeeState();
-}
-
-class _AddEmployeeState extends State<AddEmployee> {
+class AddEmployeeView extends StatelessWidget {
   final employeeController = Get.put(EmployeeController());
   final _formKey = GlobalKey<FormState>();
   late final EmployeeModel _employeeModel = EmployeeModel();
-  RxString buttonText = 'ADD'.obs;
+
+  AddEmployeeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: backgroundColour,
         body: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -106,6 +103,11 @@ class _AddEmployeeState extends State<AddEmployee> {
                     onSaved: (val) {
                       _employeeModel.phoneNo = val;
                     },
+                    inputFormatters: <TextInputFormatter>[
+                      //
+                      FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+$')),
+                      LengthLimitingTextInputFormatter(10),
+                    ],
                   ),
                   SizedBox(
                     height: 10,
@@ -152,16 +154,15 @@ class _AddEmployeeState extends State<AddEmployee> {
                         _employeeModel.dateOfJoining = DateTime.parse(val!),
                   ),
                   MaterialButton(
-                    color: Colors.greenAccent,
+                    color: Colors.orange,
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        buttonText.value = "ADDING";
                         _formKey.currentState!.save();
 
                         await employeeController.addEmployee(_employeeModel);
                       }
                     },
-                    child: Obx(() => Text(buttonText.value)),
+                    child: Obx(() => Text(employeeController.buttonText.value)),
                   )
                 ],
               ),

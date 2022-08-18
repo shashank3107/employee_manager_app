@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 class EmployeeController extends GetxController {
   DateTime currentDate = DateTime.now();
   var employees = List<EmployeeModel>.empty().obs;
-  RxBool loading = false.obs;
+  RxString buttonText = 'ADD'.obs;
 
   @override
   void onInit() {
@@ -66,10 +66,10 @@ class EmployeeController extends GetxController {
   }
 
   Future addEmployee(EmployeeModel employeeModel) async {
+    buttonText.value = "ADDING";
     var response = await EmployeeServices.addEmployee(employeeModel);
 
     if (response is Success) {
-      loading.value = false;
       var newEmployee =
           EmployeeModel.fromJson(response.response as Map<String, dynamic>);
       print(newEmployee.name);
@@ -82,6 +82,7 @@ class EmployeeController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
         duration: Duration(seconds: 3),
       );
+      buttonText.value = "ADD";
       //employees.value = response.response as List<EmployeeModel>;
     }
 

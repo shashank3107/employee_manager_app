@@ -98,7 +98,7 @@ class HomeScreenView extends StatelessWidget {
         children: [
           FloatingActionButton(
             onPressed: () {
-              Get.to(() => const AddEmployee());
+              Get.to(() => AddEmployeeView());
             },
             child: const Icon(Icons.add),
           ),
