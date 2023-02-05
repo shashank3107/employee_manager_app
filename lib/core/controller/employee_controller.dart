@@ -23,22 +23,20 @@ class EmployeeController extends GetxController {
     Years difference may be 5 but if we consider the month and the day it can get above 5 years
   */
   Color flagColor(DateTime dateTime) {
-    bool timeGapIsFiveYears = false;
+    bool timeForFiveYear = false;
     if (currentDate.year - dateTime.year > 5) {
-      timeGapIsFiveYears = true;
+      timeForFiveYear = true;
     } else if (currentDate.year - dateTime.year == 5) {
       if (currentDate.month - dateTime.month == 0) {
         if (currentDate.day - dateTime.day > 0) {
-          timeGapIsFiveYears = true;
+          timeForFiveYear = true;
         } else if (currentDate.month - dateTime.month > 0) {
-          timeGapIsFiveYears = true;
+          timeForFiveYear = true;
         }
       }
     }
 
-    return timeGapIsFiveYears
-        ? const Color(0xff00FF00)
-        : const Color(0xff808080);
+    return timeForFiveYear ? const Color(0xff00FF00) : const Color(0xff808080);
   }
 
   String formatDate(DateTime dateTime) {
